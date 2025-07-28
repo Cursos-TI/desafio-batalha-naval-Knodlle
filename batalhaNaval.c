@@ -1,33 +1,54 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define TAMANHO_TABULEIRO 10 
 int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO] = {0};
 int navio[3] = {3,3,3};
 
 
-int cone[5][5] = {
-    {0,0,0,0,0},
-    {0,0,0,0,0},
-    {0,0,1,0,0},
-    {0,1,1,1,0},
-    {1,1,1,1,1}
-};
+int cone[5][5];
+int cruz[5][5];
+int octaedro[5][5];
 
-int cruz[5][5] = {
-    {0,0,1,0,0},
-    {0,0,1,0,0},
-    {1,1,1,1,1},
-    {0,0,1,0,0},
-    {0,0,1,0,0}
-};
 
-int octaedro[5][5] = {
-    {0,0,1,0,0},
-    {0,1,1,1,0},
-    {1,1,1,1,1},
-    {0,1,1,1,0},
-    {0,0,1,0,0}
-};
+void preencher_cone() {
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            // Preenche apenas as 3 primeiras linhas com padrão triangular
+            if (i < 3 && j >= (2 - i) && j <= (2 + i)) {
+                cone[i][j] = 1;
+            } else {
+                cone[i][j] = 0;
+            }
+        }
+    }
+}
+
+void preencher_cruz() {
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            // Preenche a linha central e coluna central
+            if (i == 2 || j == 2) {
+                cruz[i][j] = 1;
+            } else {
+                cruz[i][j] = 0;
+            }
+        }
+    }
+}
+
+void preencher_octaedro() {
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            // Usa distância de Manhattan para formar o losango
+            if (abs(i - 2) + abs(j - 2) <= 2) {
+                octaedro[i][j] = 1;
+            } else {
+                octaedro[i][j] = 0;
+            }
+        }
+    }
+}
 
 int posicionador_navios(){
     int x, y;
@@ -127,27 +148,49 @@ int posicionador_navios(){
     return 0;
 }
 
-//aplicar habilidades mo tabuleiro
-void aplicar_habilidade(int habilidade[5][5], int centro_x, int centro_y) {
+
+void aplicar_habilidade(int habilidade[5][5], int centro_x, int centro_y, int valor_habilidade) {
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) {
             if (habilidade[i][j] == 1) {
-                int pos_x = centro_x + (i - 2);
+                int pos_x = centro_x + (i - 2); 
                 int pos_y = centro_y + (j - 2); 
                 
-                //limites do tabuleiro
+                
                 if (pos_x >= 0 && pos_x < TAMANHO_TABULEIRO && pos_y >= 0 && pos_y < TAMANHO_TABULEIRO) {
-                    tabuleiro[pos_x][pos_y] = 5; 
+                    // Só marca se for água, não sobrescreve navios
+                    if (tabuleiro[pos_x][pos_y] == 0) {
+                        tabuleiro[pos_x][pos_y] = valor_habilidade;
+                    }
                 }
             }
         }
     }
 }
 
+
 void mostrar_tabuleiro(){
     for (int i = 0; i < TAMANHO_TABULEIRO; i++){
         for (int j = 0; j < TAMANHO_TABULEIRO; j++){
-            printf("%d ", tabuleiro[i][j]);
+            switch(tabuleiro[i][j]){
+                case 0: // Água
+                    printf(". ");
+                    break;
+                case 3: // Navio
+                    printf("# ");
+                    break;
+                case 5: // Cone
+                    printf("C ");
+                    break;
+                case 6: // Cruz
+                    printf("X ");
+                    break;
+                case 7: // Octaedro
+                    printf("O ");
+                    break;
+                default:
+                    printf("%d ", tabuleiro[i][j]);
+            }
         }
         printf("\n");
     }
@@ -155,15 +198,20 @@ void mostrar_tabuleiro(){
 
 int main(){
     
+    preencher_cone();
+    preencher_cruz();
+    preencher_octaedro();
+
+    
     posicionador_navios();
     posicionador_navios();
     posicionador_navios();
     posicionador_navios();
     
     
-    aplicar_habilidade(cone, 5, 5);       
-    aplicar_habilidade(cruz, 2, 7);       
-    aplicar_habilidade(octaedro, 8, 3);   
+    aplicar_habilidade(cone, 5, 5, 5);       
+    aplicar_habilidade(cruz, 2, 7, 6);       
+    aplicar_habilidade(octaedro, 8, 3, 7);   
     
     mostrar_tabuleiro();          
 

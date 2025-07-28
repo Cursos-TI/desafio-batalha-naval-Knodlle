@@ -1,40 +1,109 @@
 #include <stdio.h>
 
-// Desafio Batalha Naval - MateCheck
-// Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
-// Siga os comentários para implementar cada parte do desafio.
+int tabuleiro[10][10] = {0};
+int navio[3] = {3,3,3};
 
-int main() {
-    // Nível Novato - Posicionamento dos Navios
-    // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
-    // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
-    // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
 
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
+int posicionador_navios(){
+        int x, y;
+        printf("Escolha a posicao inicial do seu navio\n");
+        printf("SOMENTE NUMEROS DE 0 A 9\n");
+        
+        while(1){
+            printf("Linha: "); scanf("%i", &x);
+            printf("Coluna: "); scanf("%i",&y);
+            if (x > 9 || y > 9 || x < 0 || y < 0){
+                printf("Numero invalido!\n");
+                continue;
+            }
+            if (tabuleiro[x][y] == 3){
+                printf("Espaco ja ocupado! Selecione outro.\n");
+                continue;
+            }
+            
+            break;
+            
+        }
+        
+        int opcao;
+        int erro = 1;
+        while(erro){
+            printf("1-Vertical 2-Horizontal 3-Diagonal\nOpcao: ");
+            scanf("%d", &opcao);
+            
+            if(opcao == 1){
+            if (x + 2 > 9) {
+                printf("O navio vertical ultrapassa o limite do tabuleiro!\n");
+                continue;
+            }
+            if (tabuleiro[x + 1][y] == 3 || tabuleiro[x + 2][y] == 3){
+                printf("Espaco ja ocupado! Selecione outro.\n");
+                continue;
+            }
+        } else if (opcao == 2){
+            if (y + 2 > 9) {
+                printf("O navio horizontal ultrapassa o limite do tabuleiro!\n");
+                continue;
+            }
+            if (tabuleiro[x][y + 1] == 3 || tabuleiro[x][y + 2] == 3){
+                printf("Espaco ja ocupado! Selecione outro.\n");
+                continue;
+            }
+        } else if (opcao == 3) {
+            if (x > 7 || y > 7) {
+                printf("O navio diagonal ultrapassa o limite do tabuleiro!\n");
+                continue;
+            }
+            if (tabuleiro[x + 1][y + 1] == 3 || tabuleiro[x + 2][y + 2] == 3){
+                printf("Espaco ja ocupado! Selecione outro.\n");
+                continue;
+            }
+           
+        }else{
+            printf("Numero invalido\n");
+            continue;
+        }
 
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
+        // Posicionamento
+        switch(opcao){
+            case 1:
+                for (int i = 0; i < 3; i++){
+                    tabuleiro[x + i][y] = navio[i];
+                }
+                erro = 0;
+                break;
+            case 2:
+                for (int i = 0; i < 3; i++){
+                    tabuleiro[x][y + i] = navio[i];
+                }
+                erro = 0;
+                break;
+            case 3:
+                for (int i = 0; i < 3; i++){
+                        tabuleiro[x + i][y + i] = navio[i];
+                    }
+                erro = 0;
+                break;
+        }
+    }
+    return 0;
+}
 
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
-    
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
+void mostrar_tabuleiro(){
+    for (int i = 0; i <= 9; i++){
+        for (int j = 0; j <= 9; j++){
+            printf("%d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+}
 
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
+    int main(){
+    posicionador_navios();
+    posicionador_navios();
+    posicionador_navios();
+    posicionador_navios();
+    mostrar_tabuleiro();          
 
     return 0;
 }

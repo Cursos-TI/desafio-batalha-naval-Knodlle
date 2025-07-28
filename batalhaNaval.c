@@ -1,6 +1,7 @@
 #include <stdio.h>
 
-int tabuleiro[10][10] = {0};
+#define TAMANHO_TABULEIRO 10 
+int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO] = {0};
 int navio[3] = {3,3,3};
 
 
@@ -28,7 +29,7 @@ int posicionador_navios(){
         int opcao;
         int erro = 1;
         while(erro){
-            printf("1-Vertical 2-Horizontal 3-Diagonal\nOpcao: ");
+            printf("1-Vertical 2-Horizontal 3-Diagonal primaria 4-Diagonal secundaria\nOpcao: ");
             scanf("%d", &opcao);
             
             if(opcao == 1){
@@ -51,7 +52,7 @@ int posicionador_navios(){
             }
         } else if (opcao == 3) {
             if (x > 7 || y > 7) {
-                printf("O navio diagonal ultrapassa o limite do tabuleiro!\n");
+                printf("O navio diagonal primaria ultrapassa o limite do tabuleiro!\n");
                 continue;
             }
             if (tabuleiro[x + 1][y + 1] == 3 || tabuleiro[x + 2][y + 2] == 3){
@@ -59,6 +60,15 @@ int posicionador_navios(){
                 continue;
             }
            
+        }else if (opcao == 4){
+            if (x > 7 || y < 2) {
+                printf("O navio diagonal secundaria ultrapassa o limite do tabuleiro!\n");
+                continue;
+            }
+            if (tabuleiro[x - 1][y - 1] == 3 || tabuleiro[x - 2][y - 2] == 3){
+                printf("Espaco ja ocupado! Selecione outro.\n");
+                continue;
+            }
         }else{
             printf("Numero invalido\n");
             continue;
@@ -84,6 +94,12 @@ int posicionador_navios(){
                     }
                 erro = 0;
                 break;
+            case 4: 
+                for (int i = 0; i < 3; i++){
+                tabuleiro[x + i][y - i] = navio[i];
+                }
+                erro = 0;
+                break;
         }
     }
     return 0;
@@ -100,9 +116,7 @@ void mostrar_tabuleiro(){
 
     int main(){
     posicionador_navios();
-    posicionador_navios();
-    posicionador_navios();
-    posicionador_navios();
+    
     mostrar_tabuleiro();          
 
     return 0;
